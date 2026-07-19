@@ -1,0 +1,104 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  color-scheme: dark;
+
+  --background: #0b1120;
+  --surface: rgba(15, 23, 42, 0.88);
+  --surface-soft: rgba(30, 41, 59, 0.52);
+  --border: #334155;
+
+  --text: #e5e7eb;
+  --muted: #94a3b8;
+
+  --accent: #38bdf8;
+  --accent-soft: rgba(56, 189, 248, 0.12);
+
+  --success: #22c55e;
+  --success-soft: rgba(34, 197, 94, 0.12);
+
+  --danger: #ef4444;
+  --danger-soft: rgba(239, 68, 68, 0.12);
+
+  --radius-large: 24px;
+  --radius-medium: 18px;
+  --body-glow: var(--body-glow);
+  --body-start: #0f172a;
+  --input-background: rgba(15, 23, 42, 0.7);
+  --dialog-background: #0f172a;
+  --backdrop: rgba(2, 6, 23, 0.78);
+  --shadow: rgba(0, 0, 0, 0.24);
+  --accent-text: #e0f2fe;
+  --checked-text: #7dd3fc;
+  --success-text: #bbf7d0;
+  --danger-text: #fecaca;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --background: #f4f7fb;
+  --surface: rgba(255, 255, 255, 0.94);
+  --surface-soft: rgba(226, 232, 240, 0.66);
+  --border: #cbd5e1;
+  --text: #172033;
+  --muted: #64748b;
+  --accent: #0284c7;
+  --accent-soft: rgba(2, 132, 199, 0.11);
+  --success: #15803d;
+  --success-soft: rgba(22, 163, 74, 0.1);
+  --danger: #dc2626;
+  --danger-soft: rgba(220, 38, 38, 0.09);
+  --body-glow: rgba(14, 165, 233, 0.14);
+  --body-start: #eaf2fb;
+  --input-background: rgba(255, 255, 255, 0.88);
+  --dialog-background: #ffffff;
+  --backdrop: rgba(15, 23, 42, 0.5);
+  --shadow: rgba(15, 23, 42, 0.1);
+  --accent-text: #075985;
+  --checked-text: #0369a1;
+  --success-text: #166534;
+  --danger-text: #991b1b;
+}
+
+
+html {
+  min-height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  color: var(--text);
+  background:
+    radial-gradient(
+      circle at top left,
+      var(--body-glow),
+      transparent 35%
+    ),
+    linear-gradient(135deg, var(--body-start), var(--background));
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  color: inherit;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+h1,
+h2,
+h3,
+p {
+  overflow-wrap: anywhere;
+}

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Особиста система щоденної стабільності">
+  <meta id="themeColorMeta" name="theme-color" content="#0b1120">
+  <script>
+    (() => {
+      try {
+        const raw = localStorage.getItem("yadro-dnya-state-v7") || localStorage.getItem("yadro-dnya-state-v6") || localStorage.getItem("yadro-dnya-state-v5") || localStorage.getItem("yadro-dnya-state-v4") || localStorage.getItem("yadro-dnya-state-v3");
+        const selected = raw ? JSON.parse(raw)?.preferences?.theme : "system";
+        const resolved = selected === "system"
+          ? (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+          : selected;
+        document.documentElement.dataset.theme = resolved || "dark";
+      } catch { document.documentElement.dataset.theme = "dark"; }
+    })();
+  </script>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="apple-touch-icon" href="./assets/icons/icon-192.png">
+  <title>Ядро дня</title>
+  <link rel="stylesheet" href="./src/css/base.css"><link rel="stylesheet" href="./src/css/layout.css"><link rel="stylesheet" href="./src/css/components.css">
+</head>
+<body>
+<div class="app">
+  <header class="header"><div><p class="eyebrow">Система опори</p><h1>Ядро дня</h1><p id="currentDate" class="current-date"></p></div><div class="header-actions"><button id="quickThemeToggle" class="icon-button theme-toggle" aria-label="Змінити тему" title="Змінити тему">☾</button><div id="dayStatus" class="status status--open">День не закритий</div></div></header>
+  <nav class="tabs" aria-label="Розділи">
+    <button class="tab-button is-active" data-tab="today">Сьогодні</button>
+    <button class="tab-button" data-tab="statistics">Статистика</button>
+    <button class="tab-button" data-tab="calendar">Календар</button>
+    <button class="tab-button" data-tab="goals">Цілі</button>
+    <button class="tab-button" data-tab="achievements">Досягнення</button>
+    <button class="tab-button" data-tab="annual-report">Річний звіт</button>
+    <button class="tab-button" data-tab="history">Історія</button>
+    <button class="tab-button" data-tab="settings">Дані</button>
+  </nav>
+  <main>
+    <section id="todayTab" class="tab-panel">
+
+      <section class="streak-section" aria-label="Серії днів">
+        <article class="streak-card">
+          <div><p class="streak-card__label">Поточна серія</p><p id="todayCurrentStreak" class="streak-card__value">0 днів</p></div>
+          <div class="streak-card__right"><p class="streak-card__label">Найдовша</p><p id="todayLongestStreak" class="streak-card__secondary">0 днів</p></div>
+          <div class="streak-progress"><div class="streak-progress__top"><span id="streakNextLabel">Наступна ціль: 3 дні</span><strong id="streakNextValue">0 / 3</strong></div><div class="progress-track"><div id="streakProgressBar" class="progress-bar" style="width:0%"></div></div></div>
+        </article>
+      </section>
+
+      <section class="time-section">
+        <div class="section-heading"><div><h2>Облік часу</h2><p>Запускай таймер під час роботи або додай час вручну.</p></div><div id="activeTimerStatus" class="timer-global-status">Таймер не запущено</div></div>
+        <div class="timer-grid">
+          <article class="timer-card" data-time-category="career">
+            <div><p class="timer-card__label">Кар’єра</p><p id="careerTimerValue" class="timer-card__value">00:00:00</p><p id="careerTodayTime" class="timer-card__today">Сьогодні: 0 хв</p></div>
+            <div class="timer-actions"><button id="careerTimerToggle" class="button">▶ Почати</button><button class="button button--secondary quick-time" data-category="career" data-minutes="15">+15 хв</button><button class="button button--secondary quick-time" data-category="career" data-minutes="30">+30 хв</button></div>
+            <form class="manual-time-form" data-category="career"><input type="number" min="1" max="1440" step="1" placeholder="Хвилини" required><button class="button button--secondary">Додати</button></form>
+          </article>
+          <article class="timer-card" data-time-category="german">
+            <div><p class="timer-card__label">Німецька</p><p id="germanTimerValue" class="timer-card__value">00:00:00</p><p id="germanTodayTime" class="timer-card__today">Сьогодні: 0 хв</p></div>
+            <div class="timer-actions"><button id="germanTimerToggle" class="button">▶ Почати</button><button class="button button--secondary quick-time" data-category="german" data-minutes="15">+15 хв</button><button class="button button--secondary quick-time" data-category="german" data-minutes="30">+30 хв</button></div>
+            <form class="manual-time-form" data-category="german"><input type="number" min="1" max="1440" step="1" placeholder="Хвилини" required><button class="button button--secondary">Додати</button></form>
+          </article>
+        </div>
+      </section>
+      <div class="main-layout">
+        <section class="column">
+          <article class="card"><h2>Ядро</h2><div class="task-group"><p class="group-title">Кар’єра</p><div id="careerTasks"></div></div><div class="divider"></div><div class="task-group"><p class="group-title">Німецька</p><div id="germanTasks"></div></div></article>
+          <article class="card"><h2>Тіло</h2><p id="bodyNote" class="card-note"></p><div id="bodyTasks"></div></article>
+        </section>
+        <section class="column"><article class="card card--accent"><h2>Гігієна</h2><div class="hygiene-section"><h3>Ранок</h3><div id="morningHygieneTasks"></div></div><div class="divider"></div><div class="hygiene-section"><h3>Перед сном</h3><div id="eveningHygieneTasks"></div></div></article></section>
+      </div>
+      <section class="after-core"><div class="section-heading"><div><h2>Після ядра</h2><p>Бонуси не визначають, чи був день успішним.</p></div><div id="bonusStatus" class="bonus-counter">Бонусів: 0</div></div><div id="bonusGroups" class="bonus-grid"></div></section>
+      <article class="card note-card"><h2>Нотатка дня</h2><p class="card-note">Коротко зафіксуй, що сьогодні було важливим.</p><textarea id="dayNote" rows="5" maxlength="2000" placeholder="Що сьогодні було найважливішим?"></textarea><p id="noteSaved" class="save-hint">Зберігається автоматично</p></article>
+    </section>
+
+    <section id="statisticsTab" class="tab-panel" hidden><div class="page-heading"><h2>Статистика</h2><p>Загальна картина за всі збережені дні, включно із сьогоднішнім.</p></div><div class="statistics-overview"><article class="stat-card"><p class="stat-card__label">Закрито днів</p><p id="closedDaysStat" class="stat-card__value">0 / 0</p></article><article class="stat-card"><p class="stat-card__label">Поточна серія</p><p id="currentStreakStat" class="stat-card__value">0 днів</p></article><article class="stat-card"><p class="stat-card__label">Найдовша серія</p><p id="longestStreakStat" class="stat-card__value">0 днів</p></article><article class="stat-card"><p class="stat-card__label">Виконано бонусів</p><p id="totalBonusesStat" class="stat-card__value">0</p></article><article class="stat-card"><p class="stat-card__label">Кар’єра — весь час</p><p id="careerTotalTimeStat" class="stat-card__value stat-card__value--time">0 хв</p></article><article class="stat-card"><p class="stat-card__label">Німецька — весь час</p><p id="germanTotalTimeStat" class="stat-card__value stat-card__value--time">0 хв</p></article></div><article class="card time-statistics-card"><h2>Час за місяцями</h2><p class="card-note">Скільки часу було вкладено в Кар’єру та Німецьку.</p><div id="monthlyTimeStats" class="monthly-time-stats"></div></article><article class="card"><h2>Виконання за напрямами</h2><p class="card-note">Відсоток виконаних обов’язкових завдань.</p><div id="categoryStats" class="category-stats"></div></article></section>
+
+    <section id="calendarTab" class="tab-panel" hidden><div class="calendar-toolbar"><button id="prevMonth" class="button button--secondary">←</button><h2 id="calendarTitle"></h2><button id="nextMonth" class="button button--secondary">→</button></div><div class="calendar-legend"><span><i class="legend-dot done"></i>Закритий</span><span><i class="legend-dot missed"></i>Не закритий</span><span><i class="legend-dot today"></i>Сьогодні</span></div><div class="calendar-card"><div class="calendar-weekdays"><span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Нд</span></div><div id="calendarGrid" class="calendar-grid"></div></div></section>
+
+    <section id="goalsTab" class="tab-panel" hidden><div class="page-heading"><h2>Цілі</h2><p>Створюй вимірювані довгострокові цілі та оновлюй прогрес.</p></div><form id="goalForm" class="card form-grid"><label>Назва<input id="goalTitle" required maxlength="120" placeholder="Наприклад, прочитати 100 книг"></label><label>Поточне значення<input id="goalCurrent" type="number" min="0" step="1" value="0" required></label><label>Цільове значення<input id="goalTarget" type="number" min="1" step="1" value="100" required></label><button class="button" type="submit">Додати ціль</button></form><div id="goalsList" class="goals-list"></div></section>
+
+    <section id="achievementsTab" class="tab-panel" hidden>
+      <div class="page-heading"><h2>Досягнення</h2><p>Прогрес за закритими днями, серіями, часом, бонусами та цілями.</p></div>
+      <div class="achievements-summary"><article class="stat-card"><p class="stat-card__label">Отримано</p><p id="unlockedAchievementsStat" class="stat-card__value">0 / 0</p></article><article class="stat-card"><p class="stat-card__label">Поточна серія</p><p id="achievementCurrentStreak" class="stat-card__value">0 днів</p></article><article class="stat-card"><p class="stat-card__label">Найдовша серія</p><p id="achievementLongestStreak" class="stat-card__value">0 днів</p></article></div>
+      <div id="achievementsList" class="achievements-list"></div>
+    </section>
+
+
+    <section id="annual-reportTab" class="tab-panel" hidden>
+      <div class="annual-report-toolbar">
+        <div class="page-heading"><h2>Річний звіт</h2><p>Підсумок дисципліни, часу, серій і прогресу за вибраний рік.</p></div>
+        <div class="annual-report-actions">
+          <label class="year-select-label">Рік<select id="annualReportYear"></select></label>
+          <button id="printAnnualReport" class="button">Зберегти як PDF</button>
+        </div>
+      </div>
+      <div id="annualReportContent" class="annual-report"></div>
+    </section>
+
+    <section id="historyTab" class="tab-panel" hidden><div class="page-heading"><h2>Історія днів</h2><p>Натисни на день, щоб побачити всі виконані та пропущені завдання.</p></div><div id="historyList" class="history-list"></div></section>
+
+    <section id="settingsTab" class="tab-panel" hidden><div class="page-heading"><h2>Дані та бонуси</h2><p>Хмарна синхронізація, встановлення, резервні копії й налаштування бонусних завдань.</p></div>
+<article class="card sync-card">
+  <div class="section-heading"><div><h2>Хмарна синхронізація</h2><p>Google-вхід і автоматичне перенесення змін між телефоном та комп’ютером.</p></div><span id="syncStatus" class="sync-status" data-status="initializing">Підключення…</span></div>
+  <div class="sync-account"><div class="sync-avatar">☁</div><div><strong id="syncUser">Обліковий запис не підключено</strong><p id="syncMessage" class="card-note">Перевіряю налаштування…</p></div></div>
+  <div class="sync-meta"><span>Остання синхронізація</span><strong id="syncLastTime">Ще не синхронізовано</strong></div>
+  <div class="button-row"><button id="syncSignIn" class="button">Увійти через Google</button><button id="syncNow" class="button" disabled>Синхронізувати зараз</button><button id="syncDownload" class="button button--secondary" disabled>Завантажити з хмари</button><button id="syncSignOut" class="button button--secondary" hidden>Вийти</button></div>
+  <p class="save-hint">Звичайні зміни відправляються автоматично приблизно через секунду. Без інтернету застосунок продовжує працювати локально.</p>
+</article><article class="card"><h2>Оформлення</h2><p class="card-note">Обери світлу, темну тему або автоматичне перемикання за налаштуваннями пристрою.</p><div id="themeSelector" class="theme-selector" role="group" aria-label="Тема оформлення"><button class="theme-option" data-theme-choice="light">☀ Світла</button><button class="theme-option" data-theme-choice="dark">☾ Темна</button><button class="theme-option" data-theme-choice="system">◐ Системна</button></div><p id="themeMessage" class="message"></p></article><article class="card"><h2>Встановлення застосунку</h2><p class="card-note">Після встановлення «Ядро дня» відкриватиметься окремо від браузера та працюватиме без інтернету.</p><div class="button-row"><button id="installAppButton" class="button" hidden>Встановити застосунок</button></div><p id="pwaMessage" class="message">Перевіряю можливість встановлення…</p></article><article class="card"><h2>Резервна копія</h2><p class="card-note">Експорт містить історію, нотатки, цілі та список бонусів.</p><div class="button-row"><button id="exportButton" class="button">Експортувати JSON</button><button id="importButton" class="button button--secondary">Імпортувати JSON</button><input id="importFile" type="file" accept="application/json,.json" hidden></div><p id="dataMessage" class="message"></p></article><article class="card bonus-editor-card"><div class="section-heading"><div><h2>Редагування бонусів</h2><p>Додавай і видаляй завдання без змін у коді.</p></div><button id="addBonusGroup" class="button button--secondary">+ Категорія</button></div><div id="bonusEditor"></div></article></section>
+  </main>
+</div>
+
+<dialog id="dayDialog" class="day-dialog"><div class="dialog-head"><h2 id="dialogDate"></h2><button id="closeDialog" class="icon-button" aria-label="Закрити">×</button></div><div id="dayDetails"></div></dialog>
+<script type="module" src="./src/js/app.js"></script>
+</body></html>
