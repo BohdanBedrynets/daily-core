@@ -1,65 +1,121 @@
-## Версія 2.3
+# Daily Core
 
-Додано систему досягнень і розширений блок серій днів.
+A personal productivity Progressive Web App for building a stable daily routine, tracking focused work, and reviewing long-term progress.
 
-# Ядро дня — PWA-версія
+Daily Core works offline, stores data locally, can be installed as an app, and supports optional cloud synchronization through Firebase.
 
-Особистий локальний трекер щоденних завдань.
+## Features
 
-## Запуск
+- Daily core tasks with completion tracking
+- Automatic day creation and history
+- Current and longest streaks
+- Career and German study time tracking
+- Manual time entries and persistent timers
+- Bonus tasks and editable daily notes
+- Goals with progress tracking
+- Statistics and monthly summaries
+- Achievement system
+- Annual reports with PDF export
+- Light, dark, and system themes
+- JSON backup and restore
+- Installable PWA with offline support
+- Optional Google sign-in and Firestore synchronization
 
-1. Відкрий папку `yadro-dnya` у VS Code.
-2. Запусти `index.html` через Live Server.
-3. Не відкривай файл подвійним кліком через `file://` — PWA потребує `localhost` або HTTPS.
+## Tech Stack
 
-## Встановлення як застосунку
+- HTML5
+- CSS3
+- Vanilla JavaScript with ES modules
+- Local Storage
+- Service Worker and Web App Manifest
+- Firebase Authentication
+- Cloud Firestore
+- Firebase Hosting
 
-Після першого запуску відкрий вкладку **Дані** та натисни **Встановити застосунок**.
+## Project Structure
 
-Якщо кнопка не з’явилася:
+```text
+.
+├── assets/
+│   └── icons/
+├── src/
+│   ├── css/
+│   └── js/
+│       ├── config/
+│       ├── services/
+│       └── ui/
+├── index.html
+├── manifest.webmanifest
+├── service-worker.js
+├── firebase.json
+├── firestore.rules
+└── SETUP_FIREBASE.md
+```
 
-- у Chrome на ПК натисни значок встановлення справа в адресному рядку;
-- на Android відкрий меню Chrome та вибери **Встановити застосунок** або **Додати на головний екран**.
+## Local Development
 
-Після першого успішного відкриття через Live Server застосунок може працювати без інтернету.
+The project does not require a build step.
 
-## Що зберігається
+1. Clone the repository:
 
-Дані все ще зберігаються локально в браузері. PWA не синхронізує телефон і комп’ютер. Для перенесення даних використовуй експорт та імпорт JSON.
+```bash
+git clone https://github.com/BohdanBedrynets/daily-core.git
+cd daily-core
+```
 
+2. Open the folder in VS Code.
+3. Start `index.html` with the Live Server extension.
+4. Open the local address shown by Live Server.
 
-## Версія 2.1
+Do not open `index.html` directly through `file://`. Service workers and PWA features require `localhost` or HTTPS.
 
-Додано світлу, темну та системну тему. Вибір зберігається у резервній копії.
+## Firebase Setup
 
+Cloud synchronization is optional. The application works locally without Firebase.
 
-## Версія 2.2 — облік часу
+To enable synchronization:
 
-- таймери для Кар’єри та Німецької;
-- одночасно працює лише один таймер;
-- пауза, продовження, швидке додавання 15/30 хв і ручне введення;
-- таймер продовжує рахувати після закриття застосунку;
-- час зберігається окремо для кожного дня;
-- загальний та помісячний час у статистиці;
-- час у деталях кожного дня;
-- дані часу входять до JSON-резервної копії.
+1. Create a Firebase project.
+2. Register a Web App.
+3. Enable Google Authentication.
+4. Create a Cloud Firestore database.
+5. Copy the Firebase configuration into:
 
+```text
+src/js/firebase-config.js
+```
 
-## Версія 2.4 — річний звіт
+6. Deploy the included Firestore security rules.
+7. Deploy the app with Firebase Hosting.
 
-Додано окрему сторінку «Річний звіт» із вибором року, підсумками закритих днів, найдовшою серією, часом Кар’єри й Німецької, бонусами, найкращим місяцем, місячною динамікою та виконанням ядра. Кнопка «Зберегти як PDF» відкриває системне вікно друку, де потрібно вибрати «Зберегти як PDF».
+Detailed instructions are available in [`SETUP_FIREBASE.md`](./SETUP_FIREBASE.md).
 
-## Версія 2.5 — хмарна синхронізація
+## Data and Privacy
 
-Додано:
+Without Firebase, all application data remains in the browser's Local Storage.
 
-- Google-вхід через Firebase Authentication;
-- автоматичну синхронізацію через Cloud Firestore;
-- роботу без інтернету з локальним збереженням;
-- статус синхронізації та час останнього обміну;
-- ручну відправку і примусове завантаження хмарної копії;
-- правила Firestore, які ізолюють дані за UID користувача;
-- конфігурацію Firebase Hosting;
-- окрему інструкцію `SETUP_FIREBASE.md`.
+When cloud synchronization is enabled:
 
-Перед використанням хмари заповни `src/js/firebase-config.js` і виконай кроки з `SETUP_FIREBASE.md`.
+- the user signs in through Google;
+- data is stored under that user's Firebase UID;
+- Firestore rules restrict access to the authenticated owner;
+- the Firebase Web App configuration is public by design and is not treated as a secret.
+
+Do not commit service-account keys, `.env` files, or other private credentials.
+
+## Backup
+
+Daily Core supports JSON export and import. Keeping occasional local backups is recommended even when cloud synchronization is enabled.
+
+## PWA Installation
+
+After opening the hosted application in a supported browser:
+
+- on desktop, use the install icon in the browser address bar;
+- on Android, open the browser menu and select **Install app** or **Add to Home screen**.
+
+After the first successful load, the application can continue working offline.
+
+## Current Status
+
+The main functionality is complete. Remaining work is focused on Firebase deployment, cross-device testing, responsive interface polishing, and final portfolio presentation.
